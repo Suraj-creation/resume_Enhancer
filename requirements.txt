@@ -1,0 +1,5 @@
+pymupdf
+streamlit
+google-generativeai
+sentence-transformers
+sqlite3
