@@ -1,5 +1,5 @@
 import streamlit as st
-import fitz  # PyMuPDF for better PDF parsing
+import pdfplumber  # Alternative to PyMuPDF for PDF parsing
 import google.generativeai as genai
 import sqlite3
 import tempfile
@@ -25,21 +25,15 @@ def init_db():
 
 init_db()
 
-# --- Secure PDF Text Extraction ---
+# --- Secure PDF Text Extraction (Using pdfplumber) ---
 def extract_text_from_pdf(uploaded_file):
-    """Extracts text from a PDF file using PyMuPDF while ensuring proper file handling."""
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
-        temp_pdf.write(uploaded_file.read())
-        temp_pdf_path = temp_pdf.name
-
+    """Extracts text from a PDF file using pdfplumber."""
     try:
-        with fitz.open(temp_pdf_path) as doc:
-            text = "\n".join(page.get_text("text") for page in doc)
-    finally:
-        if os.path.exists(temp_pdf_path):
-            os.remove(temp_pdf_path)
-
-    return text if text.strip() else "No extractable text found."
+        with pdfplumber.open(uploaded_file) as pdf:
+            text = "\n".join(page.extract_text() or '' for page in pdf.pages)
+        return text if text.strip() else "No extractable text found."
+    except Exception as e:
+        return f"Error extracting text: {str(e)}"
 
 # --- Resume Structuring into Sections ---
 def split_resume_into_sections(text):
