@@ -1,5 +1,7 @@
-pymupdf
-streamlit
-google-generativeai
-sentence-transformers
-sqlite3
+streamlit==1.31.1
+pandas==2.2.0
+plotly==5.19.0
+reportlab==4.0.9
+PyPDF2==3.0.1
+SpeechRecognition==3.10.1
+PyAudio==0.2.14
